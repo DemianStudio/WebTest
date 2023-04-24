@@ -2,6 +2,11 @@ package com.gdp.exam.demo.vo;
 
 import java.io.IOException;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Component;
+
+import com.gdp.exam.demo.service.MemberService;
 import com.gdp.exam.demo.utill.Ut;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,46 +14,45 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 
+@Component
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Rq {
 	@Getter
 	private boolean isLogined;
-	
 	@Getter
 	private int loginedMemberId;
+	@Getter
+	private Member loginedMember;
 	
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
+	private HttpSession session;
 	
-	public Rq(HttpServletRequest req, HttpServletResponse resp) {
+	public Rq(HttpServletRequest req, HttpServletResponse resp, MemberService memberService) {
 		this.req = req;
 		this.resp = resp;
 		
-		HttpSession httpSession = req.getSession();
+		this.session = req.getSession();
 		
 		boolean isLogined = false;
 		int loginedMemberId = 0;
-
 		
-		if(httpSession.getAttribute("loginedMemberId") != null) {
+		if ( session.getAttribute("loginedMemberId") != null) {
 			isLogined = true;
-			loginedMemberId = (int) httpSession.getAttribute("loginedMemberId");
+			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+			loginedMember = memberService.getMemberById(loginedMemberId);
 		}
 		
 		this.isLogined = isLogined;
 		this.loginedMemberId = loginedMemberId;
+		this.loginedMember = loginedMember;
+		
+		this.req.setAttribute("rq", this);
 	}
-
+	
 	public void printHistoryBackJs(String msg) {
 		resp.setContentType("text/html; charset=UTF-8");
-		println("<script>");
-		
-		if(!Ut.empty(msg)) {
-			println("alert('"+msg+"');");
-		}
-		
-		println("history.back();");
-		
-		println("</script>");
+		print(Ut.jsHistoryBack(msg));
 	}
 	
 	public void print(String str) {
@@ -61,8 +65,36 @@ public class Rq {
 	}
 	
 	public void println(String str) {
-		print(str+"\n");
+		print(str + "\n");
+	}
+
+	public void login(Member member) {
+		session.setAttribute("loginedMemberId", member.getId());
+	}
+
+	public void logout() {
+		session.removeAttribute("loginedMemberId");
 	}
 	
+	public String historyBackJsOnview(String msg) {
+		req.setAttribute("msg", msg);
+		req.setAttribute("historyBack", true);
+		return "common/js";
+	}
 
+	public String jsHistoryBack(String msg) {
+		return Ut.jsHistoryBack(msg);
+	}
+	
+	public String jsReplace(String msg, String uri) {
+		return Ut.jsReplace(msg, uri);
+	}
+
+	// Rq객체가 자연스럽게 생성되도록 유지하는 역할을 한다.
+	// 지우면 안되고, 편의를 위해 BeforeActionInterceptor에서 꼭 호출을 해줘야한다. 
+	public void initOnBeforeActionInterceptor() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
