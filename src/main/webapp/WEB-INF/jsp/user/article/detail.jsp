@@ -3,6 +3,39 @@
 <c:set var="pageTitle" value="게시물 내용"/>
 <%@include file="../common/head.jspf" %>
 
+
+<script>
+const params = {}
+params.id = parseInt('${param.id}');
+</script>
+
+<script>
+function ArticleDetail__increseHitCount() {
+	const localStorageKey = 'article__' + params.id + '__viewDone';
+	
+	if (localStorage.getItem(localStorageKey)) {
+		return;
+	}
+	
+	localStorage.setItem(localStorageKey, true);
+	
+	$.get(
+		'../article/doIncreaseHitCountRd', {
+			id : params.id
+		}, function(data) {
+			$('.article-detail__hit-count').empty().html(data.data1);
+		}, 'json');
+}
+$(function() {
+	// 실전
+	// ArticleDetail__increseHitCount();
+	
+	// 임시코드
+	setTimeout(ArticleDetail__increseHitCount, 500);
+})
+</script>
+
+
 <section class="mt-5">
 	<div class="container mx-auto px-3">
     <div class="table-box-type-1">
@@ -26,6 +59,12 @@
           <tr>
             <th>작성자</th>
             <td>${article.extra__writerName}</td>
+          </tr>
+          <tr>
+            <th>조회수</th>
+            <td>
+            	<span class="badge badge-primary article-detail__hit-count">${article.hitCount }</span>
+            </td>
           </tr>
           <tr>
             <th>제목</th>

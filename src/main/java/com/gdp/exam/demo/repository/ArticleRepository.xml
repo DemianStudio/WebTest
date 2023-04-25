@@ -6,30 +6,45 @@
 	<insert id="writeArticle">
 		INSERT INTO article
 		SET regDate = NOW(),
-		updateDate =
-		NOW(),
+		updateDate = NOW(),
 		boardId = #{boardId},
 		memberId = #{memberId},
 		title = #{title},
 		`body` = #{body}
 	</insert>
-
+	
 	<select id="getForPrintArticles" resultType="Article">
 		SELECT A.*,
 		M.nickname AS extra__writerName
 		FROM article AS A
-		LEFT JOIN
-		MEMBER AS M
+		LEFT JOIN MEMBER AS M
 		ON A.memberId = M.id
 		<if test="boardId != 0">
 			WHERE A.boardId = #{boardId}
 		</if>
-		ORDER BY id DESC
-		<if test="boardId != -1">
+		<if test="searchKeyword != ''">
+		  <choose>
+		    <when test="searchKeywordTypeCode == 'title'">
+		      AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+		    </when>
+		    <when test="searchKeywordTypeCode == 'body'">
+		      AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+		    </when>
+		    <otherwise>
+		    	AND (
+		    		A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+		    		OR
+		    		A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+		    	)
+		    </otherwise>
+		  </choose>
+		</if>
+		ORDER BY A.id DESC
+		<if test="limitTake != -1">
 			LIMIT #{limitStart}, #{limitTake}
 		</if>
 	</select>
-
+	
 	<select id="getForPrintArticle" resultType="Article">
 		SELECT A.*,
 		M.nickname AS extra__writerName
@@ -38,25 +53,42 @@
 		ON A.memberId = M.id
 		WHERE A.id = #{id}
 	</select>
-
+	
 	<select id="getArticlesCount" resultType="int">
 		SELECT COUNT(*) AS cnt
 		FROM article AS A
 		<if test="boardId != 0">
 			WHERE A.boardId = #{boardId}
 		</if>
+		<if test="searchKeyword != ''">
+		  <choose>
+		    <when test="searchKeywordTypeCode == 'title'">
+		      AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+		    </when>
+		    <when test="searchKeywordTypeCode == 'body'">
+		      AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+		    </when>
+		    <otherwise>
+		    	AND (
+		    		A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+		    		OR
+		    		A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+		    	)
+		    </otherwise>
+		  </choose>
+		</if>
 	</select>
-
+	
 	<select id="getLastInsertId" resultType="int">
 		SELECT LAST_INSERT_ID()
 	</select>
-
+	
 	<delete id="deleteArticle">
 		DELETE
 		FROM article
 		WHERE id = #{id}
 	</delete>
-
+	
 	<update id="modifyArticle">
 		UPDATE article
 		<set>
@@ -70,5 +102,17 @@
 		</set>
 		WHERE id = #{id}
 	</update>
-
+	
+	<update id="increaseHitCount">
+		UPDATE article
+		SET hitCount = hitCount + 1
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getArticleHitCount" resultType="int">
+		SELECT hitCount
+		FROM article
+		WHERE id = #{id}
+	</select>
+	
 </mapper>
