@@ -30,6 +30,19 @@
             <td>${article.extra__writerName}</td>
           </tr>
           <tr>
+            <th>조회수</th>
+            <td>
+            	<span class="text-blue-700">${article.hitCount }</span>
+            </td>
+          </tr>
+          <tr>
+          <tr>
+            <th>추천</th>
+            <td>
+            	<span class="text-blue-700">${goodReactionPoint }</span>
+            </td>
+          </tr>
+          <tr>
             <th>제목</th>
             <td>
               <input type="text" class="input input-bordered input-primary w-full max-w-xs" name="title" placeholder="제목" value="${article.title}"/>

@@ -209,3 +209,52 @@ relId = 1,
 `point` = 1;
 
 SELECT * FROM reactionPoint;
+	
+SELECT A.*,
+IFNULL(SUM(RP.point), 0) AS extra__sumReactionPoint,
+IFNULL(SUM(IF(RP.point &gt; 0, RP.point, 0)), 0) AS extra__goodReactionPoint,
+IFNULL(SUM(IF(RP.point &lt; 0, RP.point, 0)), 0) AS extra__badReactionPoint
+FROM (
+    SELECT A.*,
+    M.nickname AS extra__writerName
+    FROM article AS A
+    LEFT JOIN MEMBER AS M
+    ON A.memberId = M.id
+) AS A
+LEFT JOIN reactionPoint AS RP
+ON RP.relTypeCode = 'article'
+AND A.id = RP.relId
+GROUP BY A.id
+
+SELECT * FROM reactionPoint;
+
+# 게시물 테이블 goodReactionPoint 컬럼 추가
+ALTER TABLE article
+ADD COLUMN goodReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+# 게시물 테이블 badReactionPoint 컬럼 추가
+ALTER TABLE article
+ADD COLUMN badReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+/*
+select RP.relTypeCode,
+RP.relId,
+sum(IF(RP.point > 0, RP.point, 0)) as goodReactionPoint,
+sum(IF(RP.point < 0, RP.point * -1, 0)) AS badReactionPoint
+from reactionPoint as RP
+WHERE relTypeCode = 'article'
+group by RP.relTypeCode, RP.relId
+*/
+
+UPDATE article AS A
+INNER JOIN (
+    SELECT RP.relId,
+    SUM(IF(RP.point > 0, RP.point, 0)) AS goodReactionPoint,
+    SUM(IF(RP.point < 0, RP.point * -1, 0)) AS badReactionPoint
+    FROM reactionPoint AS RP
+    WHERE relTypeCode = 'article'
+    GROUP BY RP.relTypeCode, RP.relId
+) AS RP_SUM
+ON A.id = RP_SUM.relId
+SET A.goodReactionPoint = RP_SUM.goodReactionPoint,
+A.badReactionPoint = RP_SUM.badReactionPoint;

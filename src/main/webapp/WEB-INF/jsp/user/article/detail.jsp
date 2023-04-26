@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="pageTitle" value="게시물 내용"/>
 <%@include file="../common/head.jspf" %>
-
 
 <script>
 const params = {}
@@ -35,7 +35,8 @@ $(function() {
 })
 </script>
 
-
+<fmt:formatDate value="${article.regDate }"	pattern="yyyy년 MM월 dd일 hh시" var="regDate" />
+<fmt:formatDate value="${article.updateDate }"	pattern="yyyy년 MM월 dd일 hh시" var="updateDate" />
 <section class="mt-5">
 	<div class="container mx-auto px-3">
     <div class="table-box-type-1">
@@ -50,11 +51,11 @@ $(function() {
           </tr>
           <tr>
             <th>작성날짜</th>
-            <td>${article.getRegDateForPrint()}</td>
+            <td>${regDate}</td>
           </tr>
           <tr>
             <th>수정날짜</th>
-            <td>${article.getUpdateDateForPrint()}</td>
+            <td>${updateDate}</td>
           </tr>
           <tr>
             <th>작성자</th>
@@ -63,7 +64,22 @@ $(function() {
           <tr>
             <th>조회수</th>
             <td>
-            	<span class="badge badge-primary article-detail__hit-count">${article.hitCount }</span>
+            	<span class="text-blue-700">${article.hitCount }</span>
+            </td>
+          </tr>
+          <tr>
+          <tr>
+            <th>추천</th>
+            <td>
+            	<div class="flex items-center"></div>
+            		<span class="text-blue-700">${article.goodReactionPoint }</span>
+            		<span>&nbsp;</span>
+            		
+            		<c:if test="${actorCanMakeReactionPoint }">
+            		<a href="/user/reactionPoint/doGoodReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.encodedCurrentUri}" class="btn btn-xs btn-secondary">좋아요👍</a>
+            		<span>&nbsp;</span>
+            		<a href="/user/reactionPoint/doBadReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.encodedCurrentUri}" class="btn btn-xs btn">싫어요👎</a>
+            		</c:if>
             </td>
           </tr>
           <tr>

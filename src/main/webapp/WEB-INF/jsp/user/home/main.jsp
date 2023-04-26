@@ -5,8 +5,8 @@
 <%@include file="../common/head.jspf" %>
 
 <section class="mt-5">
-  <div class="container mx-auto px-3">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo beatae veniam placeat odio voluptatibus est error consequatur enim optio consectetur sunt accusantium molestiae cupiditate quis repellendus facere atque ducimus velit.      
+  <div class="container mx-auto px-3 flex justify-center">
+      <img src="/resource/images/대머리.jpg" alt="대머리" />      
    </div>
 </section>
 

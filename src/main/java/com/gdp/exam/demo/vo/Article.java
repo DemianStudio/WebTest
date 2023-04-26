@@ -12,22 +12,29 @@ import lombok.NoArgsConstructor;
 public class Article {
 	private int id;
 	private Date regDate;
-	private String updateDate;
+	private Date updateDate;
 	private int memberId;
 	private String title;
 	private String body;
 	private int hitCount;
+	private int goodReactionPoint;
+	private int badReactionPoint;
 	
 	private String extra__writerName;
 	private boolean extra__actorCanDelete;
 	private boolean extra__actorCanModify;
 	
-//	public String getRegDateForPrint() {
-//		return regDate.substring(2, 16);
-//	}
-//
-//	public String getUpdateDateForPrint() {
-//		return regDate.substring(2, 16);
-//	}
+	/*
+	 * public String getRegDateForPrint() { 
+	 * return regDate.substring(2, 16); 
+	 * }
+	 */
+	public Date getRegDateForPrint() {
+		return regDate;
+	}
+
+	public Date getUpdateDateForPrint() {
+		return regDate;
+	}
 
 }
