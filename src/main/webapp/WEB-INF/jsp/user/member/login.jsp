@@ -9,7 +9,7 @@
 	  <form class="table-box-type-1" method="POST" action="../member/doLogin">
 		  <table>
 			  <colgroup>
-			  	<col wid="200"/>
+			  	<col width="200"/>
 			  </colgroup>
 			  <tbody>
 			  	<tr>
@@ -21,7 +21,7 @@
 			  	<tr>
 			  		<th>로그인비밀번호</th>
 			  		<td>
-			  			<input type="password" class="w-96" name="loginPw" placeholder="로그인비밀번호"/>
+			  			<input required="required" type="password" class="w-96" name="loginPw" placeholder="로그인비밀번호"/>
 			  		</td>
 			  	</tr>
 			  	<tr>

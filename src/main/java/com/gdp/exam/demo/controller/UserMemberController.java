@@ -12,9 +12,6 @@ import com.gdp.exam.demo.vo.Member;
 import com.gdp.exam.demo.vo.ResultData;
 import com.gdp.exam.demo.vo.Rq;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class UserMemberController {
 	private MemberService memberService;
@@ -117,5 +114,67 @@ public class UserMemberController {
 	@ResponseBody
 	public List<Member> getMembers() {
 		return memberService.getMembers();
+	}
+	
+	@RequestMapping("/user/member/myPage")
+	public String showMyPage() {
+		return "user/member/myPage";
+	}
+	
+	@RequestMapping("/user/member/checkPassword")
+	public String checkPassword() {	
+		return "user/member/checkPassword";
+	}
+	
+	@RequestMapping("/user/member/doCheckPassword")
+	@ResponseBody
+	public String checkPassword(String loginPw, String replaceUri) {
+		
+		if(rq.getLoginedMember().getLoginPw().equals(loginPw) == false) {
+			return rq.jsHistoryBack("비밀번호가 일치하지 않습니다.");
+		}
+		
+		if(replaceUri.equals("../member/modify")) {
+			String memberModifyAuthKey = memberService.genMemberModifyAuthKey(rq.getLoginedMemberId());
+			
+			replaceUri += "?memberModifyAuthKey" +memberModifyAuthKey;
+		}
+		
+		
+		return rq.jsReplace("", replaceUri);
+	}
+	
+	
+	@RequestMapping("/user/member/modify")
+	public String showModify() {
+		return "user/member/modify";
+	}
+	
+	@RequestMapping("/user/member/doModify")
+	@ResponseBody
+	public String doModify(String loginPw, String name, String nickname, String email, String cellphoneNo) {
+		if (Ut.empty(loginPw)) {
+			loginPw = null;
+		}
+		
+		if (Ut.empty(name)) {
+			return rq.jsHistoryBack("이름을 입력해주세요.");
+		}
+		
+		if (Ut.empty(nickname)) {
+			return rq.jsHistoryBack("닉네임을 입력해주세요.");
+		}
+		
+		if (Ut.empty(email)) {
+			return rq.jsHistoryBack("이메일을 입력해주세요.");
+		}
+		
+		if (Ut.empty(cellphoneNo)) {
+			return rq.jsHistoryBack("휴대전화번호를 입력해주세요.");
+		}
+		
+		ResultData modifyRd = memberService.modify(rq.getLoginedMemberId(), loginPw, name, nickname, email, cellphoneNo);
+		
+		return rq.jsReplace(modifyRd.getMsg(), "/"); 
 	}
 }

@@ -258,3 +258,94 @@ INNER JOIN (
 ON A.id = RP_SUM.relId
 SET A.goodReactionPoint = RP_SUM.goodReactionPoint,
 A.badReactionPoint = RP_SUM.badReactionPoint;
+
+SELECT * FROM article;
+
+# 댓글 테이블
+CREATE TABLE reply (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL,
+    relTypeCode CHAR(30) NOT NULL COMMENT '관련데이터타입코드',
+    relId INT(10) UNSIGNED NOT NULL COMMENT '관련데이터번호',
+    `body` TEXT NOT NULL
+);
+
+# 댓글 테스트 데이터
+INSERT INTO reply
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+relTypeCode = 'article',
+relId = 1,
+`body` = '댓글 1';
+
+INSERT INTO reply
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+relTypeCode = 'article',
+relId = 1,
+`body` = '댓글 2';
+
+INSERT INTO reply
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+relTypeCode = 'article',
+relId = 2,
+`body` = '댓글 3';
+
+INSERT INTO reply
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+relTypeCode = 'article',
+relId = 2,
+`body` = '댓글 4';
+    
+SELECT * FROM reply;
+
+EXPLAIN SELECT R.*,
+M.nickname AS extra__writerName
+FROM reply AS R
+LEFT JOIN `member` AS M
+ON R.memberId = M.id
+WHERE R.relTypeCode = 'article'
+AND R.relId = 1
+ORDER BY R.id DESC;
+
+# 댓글에 좋아요, 싫어요 컬럼 추가
+ALTER TABLE reply
+ADD COLUMN goodReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE reply
+ADD COLUMN badReactionPoint INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+ALTER TABLE `reply` ADD INDEX (`relTypeCode`, `relId`)
+
+# 부가정보 테이블 추가
+CREATE TABLE attr (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    
+    relTypeCode CHAR(20) NOT NULL,
+    relId INT(10) NOT NULL,
+    type1Code CHAR(30) NOT NULL,
+    type2Code CHAR(70) NOT NULL,
+    `value` TEXT NOT NULL
+);
+
+# attr 유니크 인덱스 걸기
+# 중복변수 생성금지
+# 변수 찾는 속도 최적화
+ALTER TABLE attr ADD UNIQUE INDEX(relTypeCode, relId, type1Code, type2Code);
+
+#특정 조건을 만족하는 회원 또는 게시물(기타 데이터)을 빠르게 찾기 위해서
+ALTER TABLE attr ADD UNIQUE INDEX(relTypeCode, type1Code, type2Code);
+
+# attr에 만료 날짜 추가
+ALTER TABLE attr ADD COLUMN expireDate DATETIME NULL AFTER `value`;
+DESC attr;

@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="pageTitle" value="게시물 수정"/>
+<c:set var="pageTitle" value="댓글 수정"/>
 <%@include file="../common/head.jspf" %>
 
 
 <script>
 	// 댓글작성 관련
-	let ArticleModify__submitDone = false;
-	function ArticleModify__submitForm(form) {
-		if ( ArticleModify__submitFormDone ) {
+	let ReplyModify__submitDone = false;
+	function ReplyModify__submitForm(form) {
+		if ( ReplyModify__submitFormDone ) {
 			return;
 		}    
 		
@@ -28,17 +28,18 @@
 			return;
 		}
 		
-		ArticleModify__submitDqone = true;
+		ReplyModify__submitDqone = true;
 		form.submit();		
 	}
 </script>
 
-<fmt:formatDate value="${article.regDate }"	pattern="yyyy년 MM월 dd일 hh시" var="regDate" />
-<fmt:formatDate value="${article.updateDate }"	pattern="yyyy년 MM월 dd일 hh시" var="updateDate" />
+
+<fmt:formatDate value="${reply.regDate }"	pattern="yyyy년 MM월 dd일 hh시" var="regDate" />
+<fmt:formatDate value="${reply.updateDate }"	pattern="yyyy년 MM월 dd일 hh시" var="updateDate" />
 <section class="mt-5">
   <div class="container mx-auto px-3">
-	<form class="table-box-type-1" method="POST" action="../article/doModify" onsubmit="ArticleModify__submit">
-	  <input type="hidden" name="id" value="${article.id}"/>
+	<form class="table-box-type-1" method="POST" action="../reply/doModify" onsubmit="ReplyModify__submit">
+	  <input type="hidden" name="id" value="${reply.id}"/>
 	
       <table>
       <colgroup>
@@ -46,50 +47,41 @@
       </colgroup>
         <tbody>
           <tr>
-            <th>번호</th>
-            <td>${article.id}</td>
+            <th>게시물 번호</th>
+            <td>${reply.relId}</td>
           </tr>
           <tr>
-            <th>작성날짜</th>
-            <td>${article.getRegDateForPrint()}</td>
+            <th>댓글 번호</th>
+            <td>${reply.id}</td>
           </tr>
           <tr>
-            <th>수정날짜</th>
-            <td>${article.getUpdateDateForPrint()}</td>
+            <th>댓글 작성날짜</th>
+            <td>${regDate}</td>
           </tr>
           <tr>
-            <th>작성자</th>
-            <td>${article.extra__writerName}</td>
+            <th>댓글 수정날짜</th>
+            <td>${updateDate}</td>
           </tr>
           <tr>
-            <th>조회수</th>
-            <td>
-            	<span class="text-blue-700">${article.hitCount }</span>
-            </td>
+            <th>댓글 작성자</th>
+            <td>${reply.extra__writerName}</td>
           </tr>
           <tr>
-          <tr>
-            <th>추천</th>
+            <th>댓글 추천</th>
             <td>
             	<span class="text-blue-700">${goodReactionPoint }</span>
             </td>
           </tr>
           <tr>
-            <th>제목</th>
-            <td>
-              <input type="text" class="input input-bordered input-primary w-full max-w-xs" name="title" placeholder="제목" value="${article.title}"/>
-            </td>
-          </tr>
-          <tr>
             <th>내용</th>
             <td>
-              <textarea class="w-full textarea textarea-error" name="body" placeholder="내용">${article.body}</textarea>
+              <textarea rows="5" class="w-full textarea textarea-error" name="body" placeholder="내용">${reply.body}</textarea>
             </td>
           </tr>
           <tr>
-            <th>수정</th>
+            <th>댓글 수정</th>
             <td>
-              <input class="btn btn-active btn-accent" type="submit" value="수정"/>
+              <input class="btn btn-active btn-accent" type="submit" value="댓글 수정"/>
               <button class="btn btn-active btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
             </td>
           </tr>

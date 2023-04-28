@@ -13,26 +13,15 @@
         <col width="200"/>
       </colgroup>
         <tbody>
-          <!-- radio 버튼형 선택 <tr>
-            <th>게시판</th>
-	            <td>
-		            <label>
-		            	<input type="radio" name="boardId" value="1"/>
-		            </label>	
-		            <label>	
-		            	<input type="radio" name="boardId" value="1"/>
-	            	</label>	
-            	</td>
-          </tr> -->
-          <tr>
+        <tr>
             <th>게시판</th>
             <td>
-	          <select name="boardId">
-	          	<option selected disabled>게시판을 선택해주세요.</option>
-	          	<option value="1">공지사항</option>
-	          	<option value="2">자유게시판</option>
-	          </select>
-          	</td>
+            <select name="boardId" class="select select-bordered max-w-x">
+            	<option selected disabled>게시판을 선택해주세요.</option>
+            	<option value="1">공지</option>
+            	<option value="2">자유</option>
+            </select>
+            </td>
           </tr>
           <tr>
             <th>작성자</th>
@@ -41,33 +30,24 @@
           <tr>
             <th>제목</th>
             <td>
-              <input required="required" type="text" class="input input-bordered input-primary w-full max-w-xs" name="title" placeholder="제목" value="${article.title}"/>
+              <input required="required" type="text" class="w-96 input input-bordered w-full max-w-xs" name="title" placeholder="제목" value="${article.title}"/>
             </td>
           </tr>
           <tr>
             <th>내용</th>
             <td>
-              <textarea required="required" type="text" class="w-full textarea textarea-error" name="body" placeholder="내용">${article.body}</textarea>
+              <textarea required="required" class="w-full textarea textarea-bordered" name="body" placeholder="내용" >${article.body}</textarea>
             </td>
           </tr>
           <tr>
             <th>작성</th>
             <td>
-              <input class="btn btn-active btn-accent" type="submit" value="작성"/>
-              <button class="btn btn-active btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
+              <input type="submit" class="btn btn-primary" value="작성"/>
+              <button type="button" class="btn btn-outline btn-primary" onclick="history.back();">뒤로가기</button>
             </td>
           </tr>
         </tbody>
-      </table>   
-	
-	  <div class="btns">
-		<button class="mt-3 btn btn-outline" type="button" onclick="history.back();">뒤로가기</button>
-		<a class="mt-3 btn btn-outline" href="../article/modify?id=${article.id}">게시물 수정</a>
-		
-		<c:if test="${article.extra__actorCanDelete}">
-			<a class="mt-3 btn btn-outline" onclick="if( confirm('정말 삭제하시겠습니까?') == false )return false;" href="../article/doDelete?id=${article.id}">게시물 삭제</a>
-		</c:if>	
-	  </div>
+      </table>
 	</form>
   </div>
 </section>

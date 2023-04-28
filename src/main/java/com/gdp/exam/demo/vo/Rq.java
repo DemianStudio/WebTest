@@ -50,6 +50,10 @@ public class Rq {
 		this.req.setAttribute("rq", this);
 	}
 	
+	public boolean isNotLogined() {
+		return !isLogined;
+	}
+	
 	public void printHistoryBackJs(String msg) {
 		resp.setContentType("text/html; charset=UTF-8");
 		print(Ut.jsHistoryBack(msg));
@@ -101,7 +105,7 @@ public class Rq {
 	}
 	
 	public String getEncodedCurrentUri() {
-		return Ut.getUriEndcoded(getCurrentUri());
+		return Ut.getUriEncoded(getCurrentUri());
 	}
 
 	// Rq객체가 자연스럽게 생성되도록 유지하는 역할을 한다.

@@ -83,15 +83,17 @@ public class ArticleService {
 
 	public ResultData actorCanModify(int actorId, Article article) {
 		if ( article == null ) {
-			return ResultData.from("F-1", "권한이 없습니다.");
+			return ResultData.from("F-1", "게시물이 존재하지 않습니다.");
 		}
 		
 		if ( article.getMemberId() != actorId ) {
 			return ResultData.from("F-2", "권한이 없습니다.");
 		}
 		
-		return ResultData.from("S-1", "수정가능합니다.");
+		return ResultData.from("S-1", "게시물 수정이 가능합니다.");
 	}
+	
+	
 
 	public int getArticlesCount(int boardId, String searchKeywordTypeCode, String searchKeyword) {
 		return articleRepository.getArticlesCount(boardId, searchKeywordTypeCode, searchKeyword);
@@ -127,6 +129,29 @@ public class ArticleService {
 		}
 		
 		return ResultData.from("S-1", "싫어요 수가 증가되었습니다.", "affectedRowsCount", affectedRowsCount);
+	}
+
+	public ResultData decreaseGoodReactionPoint(int relId) {
+		int affectedRowsCount = articleRepository.decreaseGoodReactionPoint(relId);
+		
+		if (affectedRowsCount == 0) {
+			return ResultData.from("F-1", "해당 게시물이 존재하지 않습니다.", "affectedRowsCount", affectedRowsCount);
+		}
+		
+		return ResultData.from("S-1", "좋아요 수가 감소되었습니다.", "affectedRowsCount", affectedRowsCount);
+		
+	}
+	
+	
+	public ResultData decreaseBadReactionPoint(int relId) {
+		int affectedRowsCount = articleRepository.decreaseGoodReactionPoint(relId);
+		
+		if (affectedRowsCount == 0) {
+			return ResultData.from("F-1", "해당 게시물이 존재하지 않습니다.", "affectedRowsCount", affectedRowsCount);
+		}
+		
+		return ResultData.from("S-1", "싫어요 수가 감소되었습니다.", "affectedRowsCount", affectedRowsCount);
+		
 	}
 
 }
