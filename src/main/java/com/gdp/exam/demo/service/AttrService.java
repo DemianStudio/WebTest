@@ -2,7 +2,6 @@ package com.gdp.exam.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.gdp.exam.demo.repository.AttrRepository;
 import com.gdp.exam.demo.vo.Attr;
 

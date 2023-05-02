@@ -20,7 +20,7 @@ public class ArticleService {
 	public Article getForPrintArticle(int actorId, int id) {
 		Article article = articleRepository.getForPrintArticle(id);
 		
-//		updateForPrintData(actorId, article);
+		updateForPrintData(actorId, article);
 		
 		return article;
 	}
@@ -38,17 +38,17 @@ public class ArticleService {
 		return articles;
 	}
 	
-//	private void updateForPrintData(int actorId, Article article) {
-//		if ( article == null ) {
-//			return;
-//		}
-//		
-//		ResultData actorCanDelteRd = actorCanDelete(actorId, article);
-//		article.setExtra__actorCanDelete(actorCanDelteRd.isSuccess());
-//		
-//		ResultData actorCanMoidyRd = actorCanModify(actorId, article);
-//		article.setExtra__actorCanModify(actorCanMoidyRd.isSuccess());
-//	}
+	private void updateForPrintData(int actorId, Article article) {
+		if ( article == null ) {
+			return;
+		}
+		
+		ResultData actorCanDelteRd = actorCanDelete(actorId, article);
+		article.setExtra__actorCanDelete(actorCanDelteRd.isSuccess());
+		
+		ResultData actorCanMoidyRd = actorCanModify(actorId, article);
+		article.setExtra__actorCanModify(actorCanMoidyRd.isSuccess());
+	}
 	
 	public ResultData actorCanDelete(int actorId, Article article) {
 		if ( article == null ) {

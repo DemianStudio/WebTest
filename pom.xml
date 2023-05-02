@@ -112,6 +112,13 @@
 			<version>1.1.2</version>
 		</dependency>
 		
+		<!-- 오라클 DB -->
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
 		
 	</dependencies>
 

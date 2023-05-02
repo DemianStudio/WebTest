@@ -40,7 +40,13 @@ public class UserArticleController {
 	// 액션 메서드 시작
 	@RequestMapping("/user/article/doWrite")
 	@ResponseBody
-	public String doWrite(int boardId, String title, String body, String replaceUri) {
+	public String doWrite(@RequestParam(defaultValue="1")int boardId, String title, String body, String replaceUri) {
+
+// 		Integer boardId로 한 다음 아래 주석을 제거하면 됨.
+//		if (Ut.empty(boardId)) {
+//			return rq.jsHistoryBack("게시판을 선택해주세요.");
+//		}
+		
 		if (Ut.empty(title)) {
 			return rq.jsHistoryBack("title(을)를 입력해주세요.");
 		}

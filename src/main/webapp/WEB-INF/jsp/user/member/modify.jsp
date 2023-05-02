@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="pageTitle" value="게시물 수정"/>
+<c:set var="pageTitle" value="회원정보 수정"/>
 <%@include file="../common/head.jspf" %>
 
 
 <script>
 	// 댓글작성 관련
 	let MemberModify__submitDone = false;
-	function MemberModify__submitForm(form) {
-		if ( MemberModify__submitFormDone ) {
+	function MemberModify__submit(form) {
+		if ( MemberModify__submitDone ) {
 			return;
 		}    
 		
@@ -71,8 +71,8 @@
 
 <section class="mt-5">
   <div class="container mx-auto px-3">
-	<form class="table-box-type-1" method="POST" action="../member/doCheckPassword" onsubmit="MemberModify__submit">
-	  <input type="hidden" name="id" value="${article.id}"/>
+	<form class="table-box-type-1" method="POST" action="../member/doModify" onsubmit="MemberModify__submit(this); return false;">
+	  <input type="hidden" name="memberModifyAuthKey" value="${param.memberModifyAuthKey}"/>
 	
       <table>
       <colgroup>

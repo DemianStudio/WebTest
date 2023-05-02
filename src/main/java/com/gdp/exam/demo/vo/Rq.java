@@ -1,6 +1,7 @@
 package com.gdp.exam.demo.vo;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -27,10 +28,13 @@ public class Rq {
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
 	private HttpSession session;
+	private Map<String, String> paramMap; 
 	
 	public Rq(HttpServletRequest req, HttpServletResponse resp, MemberService memberService) {
 		this.req = req;
 		this.resp = resp;
+		
+		paramMap = Ut.getParamMap(req);
 		
 		this.session = req.getSession();
 		
@@ -85,8 +89,19 @@ public class Rq {
 		req.setAttribute("historyBack", true);
 		return "common/js";
 	}
+	
+	public String historyBackJsOnview(String resultCode, String msg) {
+		req.setAttribute("msg", String.format("[%s] %s", resultCode, msg)); // "[S-1] ~입력해주세요"
+		req.setAttribute("historyBack", true);
+		return "common/js";
+	}
 
 	public String jsHistoryBack(String msg) {
+		return Ut.jsHistoryBack(msg);
+	}
+	
+	public String jsHistoryBack(String resultCode, String msg) {
+		msg = String.format("[%s] %s", resultCode, msg);
 		return Ut.jsHistoryBack(msg);
 	}
 	
@@ -98,9 +113,10 @@ public class Rq {
 		String currentUri = req.getRequestURI();
 		String queryString = req.getQueryString();
 		
-		if(queryString != null && queryString.length() > 0) {
+		if (queryString != null && queryString.length() > 0 ) {
 			currentUri += "?" + queryString;
 		}
+		
 		return currentUri;
 	}
 	
@@ -108,11 +124,56 @@ public class Rq {
 		return Ut.getUriEncoded(getCurrentUri());
 	}
 
-	// Rq객체가 자연스럽게 생성되도록 유지하는 역할을 한다.
-	// 지우면 안되고, 편의를 위해 BeforeActionInterceptor에서 꼭 호출을 해줘야한다. 
+	// 이 메서드는 Rq객체가 자연스럽게 생성되도록 유도하는 역할을 한다.
+	// 지우면 안되고,
+	// 편의를 위해 BeforeActionInterceptor에서 꼭 호출해줘야 한다.
 	public void initOnBeforeActionInterceptor() {
-		// TODO Auto-generated method stub
+	}
+
+	public void printReplaceJs(String msg, String uri) {
+		resp.setContentType("text/html; charset=UTF-8");
+		print(Ut.jsReplace(msg, uri));
+	}
+
+	public String getLoginUri() {
+		return "../member/login?afterLoginUri=" + getAfterLoginUri();
+	}
+
+	public String getAfterLoginUri() {
+		String requestUri = req.getRequestURI(); 
 		
+		// 로그인 후 돌아가면 안되는 페이지 URL 들을 적으시면 됩니다.
+		switch (requestUri) {
+		case "/user/member/login":
+		case "/user/member/join":
+		case "/user/member/findLoginId":
+		case "/user/member/findLoginPw":
+			return Ut.getUriEncoded(Ut.getStrAttr(paramMap, "afterLoginUri", ""));
+		}
+		
+		return getEncodedCurrentUri();
 	}
 	
+	public String getLogoutUri() {
+		return "../member/doLogout?afterLogoutUri=" + getAfterLogoutUri();
+	}
+
+	public String getAfterLogoutUri() {
+		String requestUri = req.getRequestURI(); 
+		
+//		switch (requestUri) {
+//		case "/user/article/write":
+//			return "";
+//		}
+		
+		return getEncodedCurrentUri();
+	}
+	
+	public String getArticleDetailUriFromArticleList(Article article) {
+		return "../article/detail?id=" + article.getId() + "&listUri=" + getEncodedCurrentUri();
+	}
+	
+	public String getJoinUri() {
+		return "../member/join?afterLogoutUri=" + getAfterLogoutUri();
+	}
 }

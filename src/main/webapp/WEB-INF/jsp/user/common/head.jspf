@@ -2,7 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
+<!-- Dark Mode
 <html lang="Ko" class="dark" data-theme="dark"></html>
+ -->
 <html>
 <head>
 	<meta charset="UTF-8">
@@ -55,9 +57,14 @@
             <span>자유게시판</span>
           </a>
         </li>
+        <li>
+          <a href="${rq.joinUri }" class="h-full flex items-center px-3 hover:underline">
+            <span>회원가입</span>
+          </a>
+        </li>
         <c:if test="${!rq.isLogined() }">
         	<li>
-	          <a href="/user/member/login" class="h-full flex items-center px-3 hover:underline">
+	          <a href="${rq.loginUri}" class="h-full flex items-center px-3 hover:underline">
 	            <span>로그인</span>
 	          </a>
         	</li>
@@ -69,7 +76,7 @@
 	          </a>
         	</li>
         	<li>
-	          <a href="/user/member/doLogout" class="h-full flex items-center px-3 hover:underline">
+	          <a href="${rq.logoutUri}" class="h-full flex items-center px-3 hover:underline">
 	            <span>로그아웃</span>
 	          </a>
         	</li>
